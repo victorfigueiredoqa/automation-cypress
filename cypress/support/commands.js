@@ -30,4 +30,11 @@ Cypress.Commands.add('preencherCadastro', (nome, email, senha) => {
     cy.get('[data-qa="mobile_number"]').type('(38) 9.9970-6879');
     cy.get('[data-qa="create-account"]').click();
   });
+
+  Cypress.Commands.add('preencherLogin', (email, senha) => {
+    cy.get('[data-qa="login-email"]').type(email);
+    cy.get('[data-qa="login-password"]').type(senha);
+    cy.get('[data-qa="login-button"]').click();
+  
+  });
   
