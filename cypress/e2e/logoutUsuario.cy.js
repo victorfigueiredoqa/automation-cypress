@@ -18,9 +18,9 @@ describe('Login com sucesso', () => {
     cy.contains('a', 'Logged in as', { timeout: 10000 })
       .should('be.visible')
       .find('b')
-      .should('contain', 'Usuario_324');
+      .should('contain', 'Usuario_406');
 
-    cy.get('a[href="/delete_account"]').click();
-    cy.contains('Your account has been permanently deleted!').should('be.visible');
+    cy.get('.shop-menu > .nav > :nth-child(4) > a').click();
+    cy.contains('Login to your account').should('be.visible');
   })
 })

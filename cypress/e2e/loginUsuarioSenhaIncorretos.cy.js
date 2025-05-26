@@ -1,10 +1,10 @@
-describe('Login com sucesso', () => {
+describe('Login sem sucesso', () => {
 
   beforeEach(() => {
     cy.acessarPagina()
   })
 
-  it('Deve logar e excluir usuário com sucesso', () => {
+  it('Deve validar usuário ou senha incorretos', () => {
 
     cy.contains('Full-Fledged practice website for Automation Engineers').should('be.visible');
     cy.contains('Signup / Login').click();
@@ -15,12 +15,6 @@ describe('Login com sucesso', () => {
 
     cy.preencherLogin(email, senha);
 
-    cy.contains('a', 'Logged in as', { timeout: 10000 })
-      .should('be.visible')
-      .find('b')
-      .should('contain', 'Usuario_324');
-
-    cy.get('a[href="/delete_account"]').click();
-    cy.contains('Your account has been permanently deleted!').should('be.visible');
+    cy.contains('Your email or password is incorrect!').should('be.visible');
   })
 })
