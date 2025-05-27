@@ -1,3 +1,5 @@
+import 'cypress-file-upload';
+
 Cypress.Commands.add('acessarPagina', () => {
   cy.visit('/')
 })
@@ -42,3 +44,4 @@ Cypress.Commands.add('preencherUsuarioEmail', (nome, email) => {
   cy.get('[data-qa="signup-email"]').type(email);
   cy.get('[data-qa="signup-button"]').click();
 });
+
