@@ -1,26 +1,19 @@
 describe('Login com sucesso', () => {
+    const NOME_USUARIO = 'Usuario_324';
 
-  beforeEach(() => {
-    cy.acessarPagina()
-  })
+    beforeEach(() => {
+        cy.acessarPagina();
+    });
 
-  it('Deve logar e excluir usuário com sucesso', () => {
-
-    cy.contains('Full-Fledged practice website for Automation Engineers').should('be.visible');
-    cy.contains('Signup / Login').click();
-    cy.contains('Login to your account').should('be.visible');
-
-    const email = Cypress.env('email');
-    const senha = Cypress.env('senha');
-
-    cy.preencherLogin(email, senha);
-
-    cy.contains('a', 'Logged in as', { timeout: 10000 })
-      .should('be.visible')
-      .find('b')
-      .should('contain', 'Usuario_324');
-
-    cy.get('a[href="/delete_account"]').click();
-    cy.contains('Your account has been permanently deleted!').should('be.visible');
-  })
-})
+    it('Deve logar e excluir usuário com sucesso', () => {
+        cy.verificarHomePage();
+        cy.navegarParaLogin();
+        
+        const email = Cypress.env('email');
+        const senha = Cypress.env('senha');
+        
+        cy.preencherLogin(email, senha);
+        cy.verificarLoginSucesso(NOME_USUARIO);
+        cy.excluirConta();
+    });
+});

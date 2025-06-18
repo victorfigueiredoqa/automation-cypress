@@ -1,19 +1,14 @@
-import ProdutosPage from '../support/pages/ProdutosPage';
-import DetalhesProdutoPage from '../support/pages/DetalhesProdutoPage';
+describe('Verifica página de produtos', () => {
 
-describe('Funcionalidade: Visualização de detalhes de um produto', () => {
-  beforeEach(() => {
-    cy.visit('/');
-  });
+    beforeEach(() => {
+        cy.acessarPagina()
+    })
 
-  it('Deve acessar um produto e validar os detalhes apresentados', () => {
-    cy.contains('Full-Fledged practice website for Automation Engineers')
-      .should('be.visible');
-
-    ProdutosPage.acessarPaginaProdutos();
-    ProdutosPage.validarPaginaProdutosVisivel();
-    ProdutosPage.acessarPrimeiroProduto();
-
-    DetalhesProdutoPage.validarDetalhesProdutoVisiveis();
-  });
+    it('Deve acessar produto e validar detalhes', () => {
+        cy.verificarHomePage();
+        cy.navegarParaProdutos();
+        cy.acessarDetalhesPrimeiroProduto();
+        cy.verificarDetalhesProduto();
+    });
 });
+

@@ -1,17 +1,18 @@
-import ProdutosPage from '../support/pages/ProdutosPage';
+describe('Funcionalidade para Buscar Produtos', () => {
+    const PRODUTO = {
+        nome: 'Men Tshirt',
+        termoBusca: 'men tshirt'
+    };
+    
+    beforeEach(() => {
+        cy.acessarPagina();
+    });
 
-describe('Funcionalidade: Busca de Produtos', () => {
-  beforeEach(() => {
-    cy.visit('/');
-  });
-
-  it('Deve buscar e exibir o produto corretamente', () => {
-    cy.contains('Full-Fledged practice website for Automation Engineers')
-      .should('be.visible');
-
-    ProdutosPage.acessarPaginaProdutos();
-    ProdutosPage.validarPaginaProdutosVisivel();
-    ProdutosPage.buscarProduto('men tshirt');
-    ProdutosPage.validarResultadoBusca('Men Tshirt');
-  });
+    it('Deve buscar por um produto e exibir resultados corretamente', () => {
+        cy.verificarHomePage();
+        cy.navegarParaProdutos();
+        cy.buscarProduto(PRODUTO.termoBusca);
+        cy.verificarProdutoEncontrado(PRODUTO.nome);
+    });
 });
+

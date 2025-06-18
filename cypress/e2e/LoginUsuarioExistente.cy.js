@@ -1,21 +1,18 @@
-describe('Registrar Usuário', () => {
-
-  const nomeUsuario = 'Usuario_174';
-  const emailUsuario = 'email_90@gmail.com';
+describe('Login de Usuário', () => {
+  const USUARIO = {
+    nome: 'Usuario_174',
+    email: 'email_90@gmail.com'
+  };
     
   beforeEach(() => {
-    cy.acessarPagina()
-  })
+    cy.acessarPagina();
+  });
   
-  it('Deve validar login com usário já existente', () => {
-    cy.contains('Full-Fledged practice website for Automation Engineers').should('be.visible');
-    cy.contains('Signup / Login').click();
-    cy.contains('New User Signup!').should('be.visible');
-
-    cy.preencherUsuarioEmail(nomeUsuario, emailUsuario);
-
-    cy.contains('Email Address already exist!').should('be.visible');
-    
+  it('Deve validar tentativa de cadastro com email já existente', () => {
+    cy.verificarHomePage();
+    cy.navegarParaLogin();
+    cy.preencherUsuarioEmail(USUARIO.nome, USUARIO.email);
+    cy.verificarMensagemEmailExistente();
   });
 });
 
