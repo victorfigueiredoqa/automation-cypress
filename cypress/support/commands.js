@@ -201,3 +201,19 @@ Cypress.Commands.add('addProdutoCarrinho', () => {
   cy.get('p.cart_total_price').should('contain.text', 'Rs. 500');
 });
 
+// Commands para verificar a quantidade do produto no carrinho
+Cypress.Commands.add('verificarQuantidade', () => {
+  cy.get('a[href="/product_details/1"]').contains('View Product').click();
+  cy.get('h2').should('contain.text', 'Blue Top');
+  cy.get('.product-information span').contains('Rs. 500').should('be.visible');
+  cy.get('.product-information').should('contain.text', 'Availability: In Stock');
+  cy.get('.product-information').should('contain.text', 'Condition: New');
+  cy.get('.product-information').should('contain.text', 'Brand: Polo');
+  cy.get('#quantity').clear().type('4');
+  cy.get('button.btn.btn-default.cart').click();
+  cy.get('a[href="/view_cart"]').contains('View Cart').click();
+  cy.get('td.cart_quantity > button.disabled').should('have.text', '4');
+
+});
+
+
