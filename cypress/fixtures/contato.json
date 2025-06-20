@@ -1,0 +1,14 @@
+{
+    "formulario": {
+        "nome": "Victor Figueiredo",
+        "email": "victorfernando.bsi@gmail.com",
+        "assunto": "Automação com Cypress",
+        "mensagem": "Projeto de automação completo de página WEB com cypress! Segue arquivo em anexo..."
+    },
+    "arquivo": {
+        "nome": "exemplo.txt"
+    },
+    "subscricao": {
+        "email": "victorfernando.bsi@gmail.com"
+    }
+} 

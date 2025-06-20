@@ -1,0 +1,15 @@
+{
+    "busca": {
+        "termo": "men tshirt",
+        "resultadoEsperado": "Men Tshirt"
+    },
+    "detalhes": {
+        "preco": "Rs. 500",
+        "camposEsperados": [
+            "Category",
+            "Availability",
+            "Condition",
+            "Brand"
+        ]
+    }
+} 
