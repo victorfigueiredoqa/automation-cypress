@@ -216,4 +216,32 @@ Cypress.Commands.add('verificarQuantidade', () => {
 
 });
 
+// Commands para remover produtos do carrinho
+Cypress.Commands.add('removerProdutos', () => {
+  cy.get('a.cart_quantity_delete[data-product-id="1"]').click();
+  cy.get('a.cart_quantity_delete[data-product-id="2"]').click();
+  cy.get('#empty_cart').should('be.visible');
+});
+
+// Commands para exibir produtos da categoria
+Cypress.Commands.add('exibirProdutosCategoria', () => {
+  cy.get('.left-sidebar').contains('Category').should('be.visible');
+  cy.get('a[href="#Women"]').click();
+  cy.get('a[href="/category_products/1"]').contains('Dress').click();
+  cy.get('.title.text-center').should('contain.text', 'Women - Dress Products');
+  cy.get('a[href="#Men"]').click();
+  cy.get('a[href="/category_products/6"]').contains('Jeans ').click();
+  cy.get('.title.text-center').should('contain.text', 'Men - Jeans Products');
+});
+
+// Commands para visualizar e adicionar produtos da marca no carrinho
+Cypress.Commands.add('visualizarAddProdutosMarcaCarrinho', () => {
+  cy.get('a[href="/products"]').contains(' Products').click();
+  cy.get('.brands_products').contains('Brands').should('be.visible');
+  cy.get('a[href="/brand_products/Polo"]').contains('Polo').click();
+  cy.get('.title.text-center').should('contain.text', 'Brand - Polo Products');
+  cy.get('a[href="/brand_products/Madame"]').contains('Madame').click();
+  cy.get('.title.text-center').should('contain.text', 'Brand - Madame Products');
+});
+
 
