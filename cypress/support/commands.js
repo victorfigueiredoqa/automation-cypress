@@ -33,6 +33,7 @@ Cypress.Commands.add('preencherCadastro', (nome, email, senha) => {
   cy.get('[data-qa="create-account"]').click();
 });
 
+// Commands para preencher o login
 Cypress.Commands.add('preencherLogin', (email, senha) => {
   cy.get('[data-qa="login-email"]').type(email);
   cy.get('[data-qa="login-password"]').type(senha);
@@ -64,6 +65,7 @@ Cypress.Commands.add('verificarHomePage', () => {
   cy.contains('Full-Fledged practice website for Automation Engineers').should('be.visible');
 });
 
+// Commands para navegar para página de login
 Cypress.Commands.add('navegarParaLogin', () => {
   cy.contains('Signup / Login').click();
   cy.contains('New User Signup!').should('be.visible');
@@ -244,4 +246,45 @@ Cypress.Commands.add('visualizarAddProdutosMarcaCarrinho', () => {
   cy.get('.title.text-center').should('contain.text', 'Brand - Madame Products');
 });
 
+// Commands para pesquisar produtos e verificar o carrinho
+Cypress.Commands.add('pesquisarProdutosVerificarCarrinho', () => {
+  cy.get('a[href="/products"]').contains(' Products').click();
+  cy.contains('All Products').should('be.visible');
+  cy.get('#search_product').type('Blue Top');
+  cy.get('#submit_search').click();
+  cy.contains('Searched Products').should('be.visible');
+  cy.get('.productinfo.text-center').should('contain.text', 'Blue Top');
 
+  cy.get('a[data-product-id="1"]').filter(':visible').click();
+  cy.get('a[href="/view_cart"]').contains('View Cart').click();
+  cy.get('a[href="/product_details/1"]').contains('Blue Top').should('be.visible');
+  cy.get('a[href="/login"]').contains(' Signup / Login').click();
+});
+
+// Commands para verificar o carrinho
+Cypress.Commands.add('verificarCarrinho', () => {
+  cy.get('header a[href="/view_cart"]').should('contain.text', 'Cart').click();
+  cy.get('a[href="/product_details/1"]').contains('Blue Top').should('be.visible');
+});
+
+// Commands para avaliar produto
+Cypress.Commands.add('avaliarProduto', () => {
+  cy.get('a[href="/products"]').contains(' Products').click();
+  cy.contains('All Products').should('be.visible');
+  cy.get('a[href="/product_details/1"]').contains('View Product').click();
+  cy.get('a[href="#reviews"]').contains('Write Your Review').should('be.visible');
+  cy.get('#name').type('Victor QA');
+  cy.get('#email').type('victorfernando.bsi@gmail.com');
+  cy.get('#review').type('Teste!');
+  cy.get('#button-review').click();
+  cy.get('.alert-success').should('contain.text', 'Thank you for your review.');
+});
+
+// Commands para adicionar ao carrinho a partir de itens selecionados
+Cypress.Commands.add('addCarrinhoItensSelecionados', () => {
+  cy.scrollTo('bottom');
+  cy.contains('.title.text-center', 'recommended items').should('be.visible');
+  cy.get('a[data-product-id="1"]').filter(':visible').click();
+  cy.get('a[href="/view_cart"]').contains('View Cart').click();
+  cy.get('a[href="/product_details/1"]').contains('Blue Top').should('be.visible');
+});
