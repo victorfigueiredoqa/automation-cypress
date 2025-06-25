@@ -4,7 +4,7 @@ Cypress.Commands.add('acessarPagina', () => {
   cy.visit('/')
 })
 
-
+// Commands para preencher o cadastro
 Cypress.Commands.add('preencherCadastro', (nome, email, senha) => {
   cy.get('[data-qa="signup-name"]').type(nome);
   cy.get('[data-qa="signup-email"]').type(email);
@@ -323,6 +323,9 @@ Cypress.Commands.add('finalizarCompraExcluirConta', () => {
   cy.get('h2.heading').contains('Address Details')
   cy.get('#ordermsg textarea').type('Pedido realizado com sucesso! | Víctor QA');
   cy.get('a[href="/payment"]').contains('Place Order').click();
+
+  cy.intercept('POST', '/payment').as('finalizarPagamento');
+
   cy.get('[data-qa="name-on-card"]').type('VICTOR FIGUEIREDO');
   cy.get('[data-qa="card-number"]').type('4242 4242 4242 4242');
   cy.get('[data-qa="cvc"]').type('123');
@@ -413,4 +416,19 @@ Cypress.Commands.add('addCarrinhoItensSelecionados', () => {
   cy.get('a[data-product-id="1"]').filter(':visible').click();
   cy.get('a[href="/view_cart"]').contains('View Cart').click();
   cy.get('a[href="/product_details/1"]').contains('Blue Top').should('be.visible');
+});
+
+// Commands para logar e verificar usuário logado
+Cypress.Commands.add('logarVerificarUsuarioLogado', (nome, email, senha) => {
+  
+  cy.get('a[href="/logout"]').contains(' Logout').click();
+  cy.get('a[href="/login"]').contains(' Signup / Login').click();
+  cy.get('[data-qa="login-email"]').type(email);
+  cy.get('[data-qa="login-password"]').type(senha);
+  cy.get('[data-qa="login-button"]').click();
+
+  cy.contains('a', 'Logged in as', { timeout: 10000 })
+    .should('be.visible')
+    .find('b')
+    .should('contain', nome);
 });

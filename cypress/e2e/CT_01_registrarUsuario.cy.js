@@ -15,6 +15,5 @@ describe('Registrar Usuário', () => {
         cy.preencherCadastro(USUARIO.nome, USUARIO.email, USUARIO.senha);
         cy.verificarCadastroSucesso();
         cy.verificarLoginSucesso(USUARIO.nome);
-        // cy.excluirConta(); // Comentado conforme arquivo original
     });
 });
