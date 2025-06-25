@@ -218,6 +218,132 @@ Cypress.Commands.add('verificarQuantidade', () => {
 
 });
 
+// Commands para adicionar produtos ao carrinho e registrar durante a finalização da compra
+Cypress.Commands.add('registrarFinalizandoCompra', (nome, email, senha) => {
+  cy.intercept('POST', '/payment').as('finalizarPagamento');
+
+  cy.get('.btn.check_out').click();
+  cy.get('a[href="/login"]').contains('Register / Login').click();
+  cy.get('[data-qa="signup-name"]').type(nome);
+  cy.get('[data-qa="signup-email"]').type(email);
+  cy.get('[data-qa="signup-button"]').click();
+
+  cy.get('#id_gender1').click();
+  cy.get('[data-qa="password"]').type(senha);
+  cy.get('#days').select('11');
+  cy.get('#months').select('February');
+  cy.get('#years').select('1989');
+  cy.get('label[for="newsletter"]').click();
+  cy.get('label[for="optin"]').click();
+
+  cy.get('[data-qa="first_name"]').type('Victor QA');
+  cy.get('[data-qa="last_name"]').type('Teste Registro');
+  cy.get('[data-qa="company"]').type('Victor QA Registrar');
+  cy.get('[data-qa="address"]').type('Rua Francisco R. da Silva');
+  cy.get('[data-qa="address2"]').type('Nº 204. Centro');
+  cy.get('[data-qa="country"]').select('United States');
+  cy.get('[data-qa="state"]').type('Minas Gerais');
+  cy.get('[data-qa="city"]').type('Unai');
+  cy.get('[data-qa="zipcode"]').type('38.620-000');
+  cy.get('[data-qa="mobile_number"]').type('(38) 9.9970-6879');
+  cy.get('[data-qa="create-account"]').click();
+
+  cy.get('[data-qa="continue-button"]').click();
+
+  cy.contains('a', 'Logged in as', { timeout: 10000 })
+    .should('be.visible')
+    .find('b')
+    .should('contain', nome);
+
+  cy.get('a[href="/view_cart"]').first().click();
+  cy.get('.btn.check_out').click();
+  cy.get('h2.heading').contains('Address Details')
+  cy.get('#ordermsg textarea').type('Pedido realizado com sucesso! | Víctor QA');
+  cy.get('a[href="/payment"]').contains('Place Order').click();
+  cy.get('[data-qa="name-on-card"]').type('VICTOR FIGUEIREDO');
+  cy.get('[data-qa="card-number"]').type('4242 4242 4242 4242');
+  cy.get('[data-qa="cvc"]').type('123');
+  cy.get('[data-qa="expiry-month"]').type('12');
+  cy.get('[data-qa="expiry-year"]').type('2025');
+
+  cy.get('[data-qa="pay-button"]').click();
+  cy.wait('@finalizarPagamento');
+  cy.get('body').then(($body) => {
+    if ($body.find('#success_message').text().includes('Your order has been placed successfully!')) {
+      cy.log('Mensagem encontrada!');
+    } else {
+      cy.log('Mensagem não encontrada.');
+    }
+
+    cy.get('a[href="/delete_account"]').click();
+    cy.get('[data-qa="account-deleted"]').should('contain', 'Account Deleted!');
+    cy.get('[data-qa="continue-button"]').click();
+  });
+});
+
+// Commands para registrar antes de finalizar a compra
+Cypress.Commands.add('registrarAntesDeFinalizarCompra', (nome, email, senha) => {
+  cy.intercept('POST', '/payment').as('finalizarPagamento');
+
+  cy.get('a[href="/login"]').contains(' Signup / Login').click();
+  cy.get('[data-qa="signup-name"]').type(nome);
+  cy.get('[data-qa="signup-email"]').type(email);
+  cy.get('[data-qa="signup-button"]').click();
+
+  cy.get('#id_gender1').click();
+  cy.get('[data-qa="password"]').type(senha);
+  cy.get('#days').select('11');
+  cy.get('#months').select('February');
+  cy.get('#years').select('1989');
+  cy.get('label[for="newsletter"]').click();
+  cy.get('label[for="optin"]').click();
+
+  cy.get('[data-qa="first_name"]').type('Victor QA');
+  cy.get('[data-qa="last_name"]').type('Teste Registro');
+  cy.get('[data-qa="company"]').type('Victor QA Registrar');
+  cy.get('[data-qa="address"]').type('Rua Francisco R. da Silva');
+  cy.get('[data-qa="address2"]').type('Nº 204. Centro');
+  cy.get('[data-qa="country"]').select('United States');
+  cy.get('[data-qa="state"]').type('Minas Gerais');
+  cy.get('[data-qa="city"]').type('Unai');
+  cy.get('[data-qa="zipcode"]').type('38.620-000');
+  cy.get('[data-qa="mobile_number"]').type('(38) 9.9970-6879');
+  cy.get('[data-qa="create-account"]').click();
+  cy.get('[data-qa="account-created"]').should('contain', 'Account Created!');
+  cy.get('[data-qa="continue-button"]').click();
+  cy.contains('a', 'Logged in as', { timeout: 10000 })
+    .should('be.visible')
+    .find('b')
+    .should('contain', nome);
+});
+
+//Commands para finalizar a compra e excluir conta
+Cypress.Commands.add('finalizarCompraExcluirConta', () => {
+  cy.get('.btn.check_out').click();
+  cy.get('h2.heading').contains('Address Details')
+  cy.get('#ordermsg textarea').type('Pedido realizado com sucesso! | Víctor QA');
+  cy.get('a[href="/payment"]').contains('Place Order').click();
+  cy.get('[data-qa="name-on-card"]').type('VICTOR FIGUEIREDO');
+  cy.get('[data-qa="card-number"]').type('4242 4242 4242 4242');
+  cy.get('[data-qa="cvc"]').type('123');
+  cy.get('[data-qa="expiry-month"]').type('12');
+  cy.get('[data-qa="expiry-year"]').type('2025');
+
+  cy.get('[data-qa="pay-button"]').click();
+  cy.wait('@finalizarPagamento');
+  cy.get('body').then(($body) => {
+    if ($body.find('#success_message').text().includes('Your order has been placed successfully!')) {
+      cy.log('Mensagem encontrada!');
+    } else {
+      cy.log('Mensagem não encontrada.');
+    }
+
+    cy.get('a[href="/delete_account"]').click();
+    cy.get('[data-qa="account-deleted"]').should('contain', 'Account Deleted!');
+    cy.get('[data-qa="continue-button"]').click();
+  });
+});
+
 // Commands para remover produtos do carrinho
 Cypress.Commands.add('removerProdutos', () => {
   cy.get('a.cart_quantity_delete[data-product-id="1"]').click();
