@@ -155,18 +155,21 @@ Cypress.Commands.add('verificarLoginSucesso', (nomeUsuario) => {
     .should('contain', nomeUsuario);
 });
 
+//Commands para excluir conta
 Cypress.Commands.add('excluirConta', () => {
   cy.get('a[href="/delete_account"]').click();
   cy.contains('Your account has been permanently deleted!').should('be.visible');
 });
 
+// Commands para verificar login inválido
 Cypress.Commands.add('verificarLoginInvalido', () => {
   cy.contains('Your email or password is incorrect!').should('be.visible');
 });
 
 // Commands para logout
 Cypress.Commands.add('realizarLogout', () => {
-  cy.get('.shop-menu > .nav > :nth-child(4) > a').click();
+  cy.get('a[href="/logout"]').click();
+    
   cy.contains('Login to your account').should('be.visible');
 });
 

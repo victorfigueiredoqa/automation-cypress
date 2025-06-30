@@ -9,6 +9,3 @@ describe('Adicionar produtos ao carrinho', () => {
     cy.addProdutoCarrinho();
   })
 })
-
-
-
