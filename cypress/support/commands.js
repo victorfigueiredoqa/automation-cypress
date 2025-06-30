@@ -420,7 +420,7 @@ Cypress.Commands.add('addCarrinhoItensSelecionados', () => {
 
 // Commands para logar e verificar usuário logado
 Cypress.Commands.add('logarVerificarUsuarioLogado', (nome, email, senha) => {
-  
+
   cy.get('a[href="/logout"]').contains(' Logout').click();
   cy.get('a[href="/login"]').contains(' Signup / Login').click();
   cy.get('[data-qa="login-email"]').type(email);
@@ -431,4 +431,121 @@ Cypress.Commands.add('logarVerificarUsuarioLogado', (nome, email, senha) => {
     .should('be.visible')
     .find('b')
     .should('contain', nome);
+});
+
+// Commands para verificar endereço ao finalizar compra
+Cypress.Commands.add('verificaEnderecoFinalizarCompra', (nome, email, senha) => {
+
+  cy.get('.btn.check_out').click();
+
+  // Variáveis de endereço
+  const empresa = 'Victor QA Registrar';
+  const endereco = 'Rua Francisco R. da Silva';
+  const complemento = 'Nº 204. Centro';
+  const cidadeEstadoCep = 'Unai Minas Gerais 38.620-000';
+  const pais = 'United States';
+  const telefone = '(38) 9.9970-6879';
+
+  // Validação endereço de entrega
+  cy.get('#address_delivery')
+    .should('exist')
+    .within(() => {
+      cy.get('.address_address1.address_address2')
+        .eq(0)
+        .invoke('text')
+        .should('include', empresa);
+      cy.get('.address_address1.address_address2')
+        .eq(1)
+        .invoke('text')
+        .should('include', endereco);
+      cy.get('.address_address1.address_address2')
+        .eq(2)
+        .invoke('text')
+        .should('include', complemento);
+      cy.get('.address_city.address_state_name.address_postcode')
+        .invoke('text')
+        .then(text => {
+          const textoNormalizado = text.replace(/\s+/g, ' ').trim();
+          expect(textoNormalizado).to.equal(cidadeEstadoCep);
+        });
+      cy.get('.address_country_name')
+        .invoke('text')
+        .should('include', pais);
+      cy.get('.address_phone')
+        .invoke('text')
+        .should('include', telefone);
+    });
+
+  //Validação endereço de cobrança
+  cy.get('#address_invoice')
+    .should('exist')
+    .within(() => {
+      cy.get('.address_address1.address_address2')
+        .eq(0)
+        .invoke('text')
+        .should('include', empresa);
+      cy.get('.address_address1.address_address2')
+        .eq(1)
+        .invoke('text')
+        .should('include', endereco);
+      cy.get('.address_address1.address_address2')
+        .eq(2)
+        .invoke('text')
+        .should('include', complemento);
+      cy.get('.address_city.address_state_name.address_postcode')
+        .invoke('text')
+        .then(text => {
+          const textoNormalizado = text.replace(/\s+/g, ' ').trim();
+          expect(textoNormalizado).to.equal(cidadeEstadoCep);
+        });
+      cy.get('.address_country_name')
+        .invoke('text')
+        .should('include', pais);
+      cy.get('.address_phone')
+        .invoke('text')
+        .should('include', telefone);
+    });
+
+  cy.get('a[href="/delete_account"]').click();
+  cy.contains('Your account has been permanently deleted!').should('be.visible');
+  cy.get('[data-qa="continue-button"]').click();
+});
+
+
+//Commands para finalizar a compra, baixar fatura e excluir conta
+Cypress.Commands.add('finalizarCompraBaixarFaturaExcluirConta', () => {
+  cy.get('a[href="/view_cart"]').first().click();
+  cy.get('.btn.check_out').click();
+  cy.get('h2.heading').contains('Address Details')
+  cy.get('#ordermsg textarea').type('Pedido realizado com sucesso! | Víctor QA');
+  cy.get('a[href="/payment"]').contains('Place Order').click();
+
+  cy.intercept('POST', '/payment').as('finalizarPagamento');
+
+  cy.get('[data-qa="name-on-card"]').type('VICTOR FIGUEIREDO');
+  cy.get('[data-qa="card-number"]').type('4242 4242 4242 4242');
+  cy.get('[data-qa="cvc"]').type('123');
+  cy.get('[data-qa="expiry-month"]').type('12');
+  cy.get('[data-qa="expiry-year"]').type('2025');
+
+  cy.get('[data-qa="pay-button"]').click();
+  cy.wait('@finalizarPagamento');
+  cy.get('body').then(($body) => {
+    if ($body.find('#success_message').text().includes('Your order has been placed successfully!')) {
+      cy.log('Mensagem encontrada!');
+    } else {
+      cy.log('Mensagem não encontrada.');
+    }
+
+    //cy.get('a[href="/download_invoice/900"]').should('contain', 'Download Invoice').should('be.visible');
+    cy.intercept('GET', '/download_invoice/900').as('downloadInvoice');
+    cy.get('a[href="/download_invoice/900"]').click();
+    cy.wait('@downloadInvoice').its('response.statusCode').should('eq', 200);
+
+    cy.get('[data-qa="continue-button"]').click();
+
+    cy.get('a[href="/delete_account"]').click();
+    cy.get('[data-qa="account-deleted"]').should('contain', 'Account Deleted!');
+    cy.get('[data-qa="continue-button"]').click();
+  });
 });
