@@ -1,5 +1,6 @@
 import 'cypress-file-upload';
 
+// Commands para acessar a página inicial
 Cypress.Commands.add('acessarPagina', () => {
   cy.visit('/')
 })
@@ -40,27 +41,32 @@ Cypress.Commands.add('preencherLogin', (email, senha) => {
   cy.get('[data-qa="login-button"]').click();
 });
 
+// Commands para preencher o usuário e email
 Cypress.Commands.add('preencherUsuarioEmail', (nome, email) => {
   cy.get('[data-qa="signup-name"]').type(nome);
   cy.get('[data-qa="signup-email"]').type(email);
   cy.get('[data-qa="signup-button"]').click();
 });
 
+// Commands para navegar para a página de produtos
 Cypress.Commands.add('navegarParaProdutos', () => {
   cy.get('a[href="/products"]').click();
   cy.contains('All Products').should('be.visible');
 });
 
+// Commands para buscar produto
 Cypress.Commands.add('buscarProduto', (termoBusca) => {
   cy.get('#search_product').should('be.visible').type(termoBusca);
   cy.get('#submit_search').click();
   cy.contains('Searched Products').should('be.visible');
 });
 
+// Commands para verificar se o produto foi encontrado
 Cypress.Commands.add('verificarProdutoEncontrado', (nomeProduto) => {
   cy.contains(nomeProduto).should('be.visible');
 });
 
+// Commands para verificar a página inicial
 Cypress.Commands.add('verificarHomePage', () => {
   cy.contains('Full-Fledged practice website for Automation Engineers').should('be.visible');
 });
@@ -71,6 +77,7 @@ Cypress.Commands.add('navegarParaLogin', () => {
   cy.contains('New User Signup!').should('be.visible');
 });
 
+// Commands para verificar a mensagem de email existente
 Cypress.Commands.add('verificarMensagemEmailExistente', () => {
   cy.contains('Email Address already exist!').should('be.visible');
 });
@@ -80,6 +87,7 @@ Cypress.Commands.add('acessarDetalhesPrimeiroProduto', () => {
   cy.get('.product-image-wrapper').first().find('a[href^="/product_details"]').click();
 });
 
+// Commands para verificar detalhes do produto
 Cypress.Commands.add('verificarDetalhesProduto', () => {
   cy.get('.product-information > h2').should('be.visible');
   cy.get('.product-information p').contains('Category').should('be.visible');
@@ -105,6 +113,7 @@ Cypress.Commands.add('realizarSubscricaoCart', (email) => {
   cy.get('#subscribe').click();
 });
 
+// Commands para verificar a mensagem de sucesso da subscrição
 Cypress.Commands.add('verificarSubscricaoSucesso', () => {
   cy.contains('You have been successfully subscribed!').should('be.visible');
 });
@@ -115,6 +124,7 @@ Cypress.Commands.add('navegarParaContato', () => {
   cy.get('div.contact-form > .title').should('be.visible');
 });
 
+// Commands para preencher o formulário de contato
 Cypress.Commands.add('preencherFormularioContato', (dados) => {
   cy.get('[data-qa="name"]').type(dados.nome);
   cy.get('[data-qa="email"]').type(dados.email);
@@ -122,14 +132,17 @@ Cypress.Commands.add('preencherFormularioContato', (dados) => {
   cy.get('[data-qa="message"]').type(dados.mensagem);
 });
 
+// Commands para anexar arquivo no formulário de contato
 Cypress.Commands.add('anexarArquivo', (nomeArquivo) => {
   cy.get('input[name="upload_file"]').attachFile(nomeArquivo);
 });
 
+//Commands para enviar o formulário de contato
 Cypress.Commands.add('enviarFormularioContato', () => {
   cy.get('[data-qa="submit-button"]').click();
 });
 
+// Commands para verificar a mensagem de sucesso do contato
 Cypress.Commands.add('verificarMensagemContatoSucesso', () => {
   cy.contains('Success! Your details have been submitted successfully.').should('be.visible');
 });
@@ -548,4 +561,20 @@ Cypress.Commands.add('finalizarCompraBaixarFaturaExcluirConta', () => {
     cy.get('[data-qa="account-deleted"]').should('contain', 'Account Deleted!');
     cy.get('[data-qa="continue-button"]').click();
   });
+});
+
+// Commands para verificar rolagem com botão
+Cypress.Commands.add('verificarRolagemComBotao', () => {
+  cy.scrollTo('bottom');
+  cy.contains('.single-widget', 'Subscription').should('be.visible');
+  cy.get('#scrollUp').should('be.visible').click();
+  cy.contains('.col-sm-6', 'Full-Fledged practice website for Automation Engineers').should('be.visible');
+});
+
+// Commands para verificar rolagem sem botão
+Cypress.Commands.add('verificarRolagemSemBotao', () => {
+  cy.scrollTo('bottom');
+  cy.contains('.single-widget', 'Subscription').should('be.visible');
+  cy.scrollTo('top');
+  cy.contains('.col-sm-6', 'Full-Fledged practice website for Automation Engineers').should('be.visible');
 });
