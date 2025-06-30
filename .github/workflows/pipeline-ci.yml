@@ -23,6 +23,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Ensure Cypress binary is installed
+        run: npx cypress install
+
       - name: Run Cypress tests with Allure
         run: npm run cy:run
 
